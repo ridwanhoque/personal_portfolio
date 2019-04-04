@@ -14,3 +14,14 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Auth::routes();
+
+Route::group(['middleware'=>['auth','revalidate']], function(){
+	
+	Route::get('/home', 'HomeController@index')->name('home');
+	Route::resource('/category', 'CategoryController');
+
+});
+
+
