@@ -107,14 +107,18 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $category_by_id = Category::find($id);
-		$project_by_category = Category::with('projects')->count();
-		if($project_by_category<=0){
+        $category_by_id = Category::with('projects')->first('id', $id);
+
+		if($category_by_id->projects->count() <= 0){
 			$category_by_id->delete();
-			Session::flash ('message','Category deleted successfully!');
-		}else{
-			Session::flash ('error','Category can not be deleted!');
+
+			return redirect()
+                ->route('category.index')
+                ->with('message', 'Category deleted successfully!');
 		}
-		return redirect('/category');
+
+        return redirect()
+            ->route('category.index')
+            ->with('error','Category can not be deleted!');
     }
 }
